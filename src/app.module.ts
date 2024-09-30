@@ -4,11 +4,12 @@ import { PostgresConfigService } from "./config/postgres.config.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { ProductModule } from "./product/product.module";
+import { OrderModule } from './order/order.module';
 
 
 @Module({
   imports: [
-   UserModule,ProductModule,
+   UserModule,ProductModule, OrderModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -16,6 +17,7 @@ import { ProductModule } from "./product/product.module";
       useClass: PostgresConfigService,
       inject: [PostgresConfigService],
     }),
+    OrderModule,
   ],
 })
 export class AppModule {}

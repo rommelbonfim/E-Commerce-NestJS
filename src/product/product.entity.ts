@@ -10,6 +10,7 @@ import {
 import { ProductImageEntity } from './product-image.entity';
 import { CategoryEntity } from './category.entity';
 import { CategoryDTO } from "./dto/CreateProduct.dto";
+import { OrderItemEntity } from "../order/orderitem.entity";
 
 @Entity({ name: 'products' })
 export class ProductEntity {
@@ -51,4 +52,8 @@ export class ProductEntity {
   )
   @JoinTable()  // Isso cria a tabela de junção para o relacionamento ManyToMany
   categories: CategoryDTO[];
+
+  @OneToMany(() => OrderItemEntity, (itemPedido) => itemPedido.product)
+  orderitems: OrderItemEntity[];
+
 }

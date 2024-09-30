@@ -1,19 +1,14 @@
+
 import 'dotenv/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-// Substituir __dirname e __filename
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'root',
-  password: 'root',
-  database: 'postgres',
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   migrations: [__dirname + '/migrations/*.{js,ts}'],
 };

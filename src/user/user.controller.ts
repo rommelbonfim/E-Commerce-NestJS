@@ -8,7 +8,7 @@ import {
     Put,
 } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import {UserRepository} from "./user.repository";
+import {UserService} from "./user.service";
 import {PostUserDto} from "./dto/PostUser.dto";
 import {UserEntity} from "./user.entity";
 import {ListUsersDto} from "./dto/ListUsers.dto";
@@ -17,57 +17,48 @@ import {PutUserDto} from "./dto/PutUser.dto";
 
 @Controller('/user')
 export class UserController {
-    constructor(private userRepository: UserRepository) {}
+    constructor(private userService: UserService) {}
 
     @Post()
-    async CreateUser(@Body() userData: PostUserDto) {
-        const usuarioEntity = new UserEntity();
-        usuarioEntity.email = userData.email;
-        usuarioEntity.password = userData.password;
-        usuarioEntity.name = userData.name;
-        usuarioEntity.id = uuid();
-
-        this.userRepository.save(usuarioEntity);
+    async postUser(@Body() UserData: PostUserDto) {
+        const CreatedUser = await this.userService.postUser(UserData);
 
         return {
-            usuario: new ListUsersDto(usuarioEntity.id, usuarioEntity.name),
+            usuario: new ListUsersDto(CreatedUser.id, CreatedUser.name),
             messagem: 'user created',
         };
     }
 
     @Get()
-    async listUsuarios() {
-        const usuariosSalvos = await this.userRepository.list();
-        const usuariosLista = usuariosSalvos.map(
-            (usuario) => new ListUsersDto(usuario.id, usuario.name),
-        );
+    async listUsers() {
+        const SavedUsers = await this.userService.listUsers();
 
-        return usuariosLista;
+        return SavedUsers;
     }
 
     @Put('/:id')
-    async atualizaUsuario(
-        @Param('id') id: string,
-        @Body() newData: PutUserDto,
+    async putUser(
+      @Param('id') id: string,
+      @Body() newData: PutUserDto,
     ) {
-        const updatedUser = await this.userRepository.uptade(
-            id,
-            newData,
+        const updatedUser = await this.userService.updateUser(
+          id,
+          newData,
         );
 
         return {
-            user: updatedUser,
+            usuario: updatedUser,
             messagem: 'user updated',
         };
     }
 
     @Delete('/:id')
     async removeUsuario(@Param('id') id: string) {
-        const userRemoved = await this.userRepository.remove(id);
+        const deletedUser = await this.userService.deleteUser(id);
 
         return {
-            user: userRemoved,
-            messagem: 'user removed',
+            usuario: deletedUser,
+            messagem: 'user deleted',
         };
     }
 }
